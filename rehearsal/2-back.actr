@@ -13,10 +13,10 @@
     :rt -100
     :ans 0.3
     :mp 6
-    :lf 0.3
+    :lf 0.1
     ;---
     ;:act t
-    ;:brain-imaging t
+    :brain-imaging t
     ;:bout t
     :qs 1.0)
 
@@ -1210,6 +1210,7 @@
 (p notice-sign
     =goal>
         isa nback
+        status notice
     =visual-location>
         isa visual-location
         kind speedsign
@@ -1242,8 +1243,6 @@
     =visual>
         isa speedsign
         value =slimit
-    ?retrieval>
-        buffer empty
 ==>
     !bind! =cid (get-chunk-id)
     !bind! =num (get-num-sign)
@@ -1387,7 +1386,7 @@
         isa nback
         status notice
         rehearsal t
-        < nr 3
+        < nr 3000
         >= num 1
     =imaginal>
         isa nback-state
@@ -1469,16 +1468,18 @@
 (p nback-interrupt-rehearsing-notice-sign
     =goal>
         isa nback
-        - status notice  
+        - status notice 
     =visual-location>
         isa visual-location
         kind speedsign
-        :attended t
+    ?visual>
+        state free
+        buffer empty
 ==>
     =goal>
+        isa nback
         status read-nback   
         rehearsal f
-    -visual-location>
     +visual>
         isa move-attention
         screen-pos =visual-location

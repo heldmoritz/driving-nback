@@ -27,14 +27,14 @@ public class Driving extends actr.task.Task {
 	JLabel nearLabel, farLabel, signLabel, carLabel, speedoLabel, leftmirrorLabel, rightmirrorLabel, leftLaneLabel,
 			rightLaneLabel, construction;
 
-	final double scale = 0.6; // .85 //.6
-	final double steerFactor_dfa = (16 * scale);
-	final double steerFactor_dna = (4 * scale);
-	final double steerFactor_na = (3 * scale);
-	final double steerFactor_fa = (0 * scale);
+	final double scale = 0.85; // .85 //.6
+	final double steerFactor_dfa = (16 * scale); // defaults to 16
+	final double steerFactor_dna = (5 * scale); // defaults to 4
+	final double steerFactor_na = (7 * scale); // defaults to 3
+	final double steerFactor_fa = (0 * scale); // defaults to 0
 	final double accelFactor_thw = (1 * .40);
 	final double accelFactor_dthw = (3 * .40);
-	final double steerNaMax = .07;
+	final double steerNaMax = .04;
 	final double thwFollow = 1.0;
 	final double thwMax = 5.0;
 
