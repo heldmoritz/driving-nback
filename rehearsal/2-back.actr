@@ -11,9 +11,9 @@
     :v t
     ;---
     :rt -100
-    :ans 0.3
-    :mp 6
-    :lf 0.1
+    :ans 0.4
+    :mp 19
+    :lf 1.0
     ;---
     ;:act t
     :brain-imaging t
@@ -1356,8 +1356,6 @@
 ==>
     =goal>
         status notice
-    =retrieval>
-    -retrieval>
 )
 
 (p nback-rehearse-sign1*
@@ -1375,8 +1373,6 @@
 ==>
     =goal>
         status notice
-    =retrieval>
-    -retrieval>
 )
 
 ;----------------- REHEARSAL -----------------
@@ -1386,7 +1382,7 @@
         isa nback
         status notice
         rehearsal t
-        < nr 3000
+        < nr 12
         >= num 1
     =imaginal>
         isa nback-state
@@ -1486,7 +1482,6 @@
 )
 
 (set-similarities
-    
     (20 20 0) (20 40 -0.1) (20 60 -0.2) (20 80 -0.4) (20 100 -0.8) 
     (40 20 -0.1) (40 40 0) (40 60 -0.1) (40 80 -0.2) (40 100 -0.4) (40 120 -0.8) 
     (60 20 -0.2) (60 40 -0.1) (60 60 0) (60 80 -0.1) (60 100 -0.2) (60 120 -0.4) (60 140 -0.8)

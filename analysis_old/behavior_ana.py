@@ -167,9 +167,9 @@ nested pandas dataframe with the order data[nbacklevel][subject] e.g., data['2ba
 
 """
 # %% import the data
-import_path = os.getcwd() + '\data\*behavior*.txt'
+import_path = os.getcwd() + '\data1\*behavior*.txt'
 output_path = os.getcwd()
-path_list = list(glob.glob(import_path))
+path_list = list(enumerate(glob.glob(import_path)))
 if (path_list == []):
     raise missing_data('There is no data in the specified folder!')
 srate = 0.05
@@ -193,12 +193,6 @@ for s, filename in path_list:
         
 for i in range(np.min(first_subj.astype(int)),np.min(first_subj.astype(int))+ np.max(count)):
     subj_list.append('subj_' + "{:02d}".format(i))
-
-
-subj_list = []
-for p in path_list:
-    subj_list.append('subj_' + re.search(r'behavior_(d+)', p).group(1))
-
 
 data = dict.fromkeys(nbacklevels, 0)
 for key in data:
@@ -310,10 +304,7 @@ ax.legend()
 fig.tight_layout()
 plt.savefig('ana1/steering_reversals.pdf')
 plt.show()
-#outpath= r'C:\Users\Held\Documents\Data\data_human_uol\ana2\model_srr.csv'
-#pd.DataFrame.from_dict(data=output).to_csv(outpath)
 
-#output.to_csv(r'C:\Users\Held\Documents\Data\data_human_uol\ana2\model_srr.csv')
 # %% deviations from lane center
 
 mean_highway, mean_construction = np.zeros(len(
@@ -574,7 +565,6 @@ for i, con in enumerate(condition):
     plt.show()
 
 
-
 # %% speed regulation errors
 
 avg_errate_con, avg_errate_high = np.zeros(
@@ -801,6 +791,9 @@ plt.savefig('ana1/overtaking_distance.pdf')
 plt.show()
 
 #%% average overtaking
+
+mean_distance_con
+mean_distance_high
 
 lanewidth = 2.5
 length = 100

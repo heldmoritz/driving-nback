@@ -15,6 +15,6 @@ public class Vehicle {
 		p = new Position(0, 0);
 		h = new Position(1, 0);
 		fracIndex = 0;
-		speed = 0;
+		speed = 60;
 	}
 }

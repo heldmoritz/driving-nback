@@ -97,27 +97,27 @@ public class Road extends Driving {
 		double dascale = .02;
 
 		// j = blocks
-		for (int j = 0; j <= 25; j++) {
-			double lanewidth = j % 2 == 0 ? Env.scenario.lanewidth[0] : Env.scenario.lanewidth[1];
-			for (int i = 1; i <= Env.scenario.block_length; i++) {
-				double d = lanes * lanewidth / 2.0;
+		// for (int j = 0; j <= 25; j++) {
+		double lanewidth = Env.scenario.construction ? Env.scenario.lanewidth[0] : Env.scenario.lanewidth[1];
+		for (int i = 1; i <= Env.scenario.blockLength; i++) {
+			double d = lanes * lanewidth / 2.0;
 
-				if (segcount >= seglen) {
-					segcount = 0;
-					seglen = 100;
-					if (curved) {
-						curving = !curving;
-						if (curving)
-							da = ((da > 0) ? -1 : +1) * dascale * 17; // (i % 17);
-					}
+			if (segcount >= seglen) {
+				segcount = 0;
+				seglen = 100;
+				if (curved) {
+					curving = !curving;
+					if (curving)
+						da = ((da > 0) ? -1 : +1) * dascale * 17; // (i % 17);
 				}
-				if (curving)
-					h = h.rotate(da);
-				p = p.add(h);
-				Segment s = new Segment(p.x + d * h.z, p.z - d * h.x, p.x, p.z, p.x - d * h.z, p.z + d * h.x);
-				segments.addElement(s);
-				segcount++;
 			}
+			if (curving)
+				h = h.rotate(da);
+			p = p.add(h);
+			Segment s = new Segment(p.x + d * h.z, p.z - d * h.x, p.x, p.z, p.x - d * h.z, p.z + d * h.x);
+			segments.addElement(s);
+			segcount++;
+			// }
 		}
 	}
 
@@ -338,7 +338,7 @@ public class Road extends Driving {
 	void draw(Graphics g, Env env) {
 		long ri = env.simcar.roadIndex;
 		int hardS = lanes + 1; // outer line
-		double block_end = Env.scenario.block_length * env.construction.block;
+		double block_end = Env.scenario.blockLength * env.construction.block;
 
 		g.setColor(Color.darkGray);
 		Polygon p = new Polygon();
@@ -346,9 +346,8 @@ public class Road extends Driving {
 		if (newLoc == null)
 			return;
 		p.addPoint(newLoc.x, newLoc.y);
-		if (block_end < ri + 3) 
+		if (block_end < ri + 3)
 			block_end = ri + 3;
-
 
 		if (ri + distAhead < block_end) {
 			newLoc = env.world2image(location(ri + distAhead, 1));
@@ -400,9 +399,9 @@ public class Road extends Driving {
 		long cri_start;
 		long cri_stop;
 		int lane_blocked = 2;
-		
-		cri_start = env.construction.start_con != 0 ? (long) env.construction.start_con : 0;
-		cri_stop = env.construction.stop_con != 0 ? (long) env.construction.stop_con - 1 : 0;
+
+		cri_start = env.construction.startCon != 0 ? (long) env.construction.startCon : 0;
+		cri_stop = env.construction.stopCon != 0 ? (long) env.construction.stopCon - 1 : 0;
 
 		if (ri >= cri_start)
 			cri_start = env.simcar.roadIndex + 3;
@@ -420,23 +419,25 @@ public class Road extends Driving {
 		 * 
 		 * } else { construction_ri = env.simcar.roadIndex; } }
 		 */
-		for (int i = 0; i < 3; i++) {
-			lane_blocked = 2;
-			lane_blocked += i;
-			if (env.world2image(location(cri_stop, lane_blocked - 0.05)) != null) {
-				Polygon yellow_line = new Polygon();
-				g.setColor(Color.yellow);
-				Coordinate b_left = env.world2image(location(cri_start, lane_blocked - 0.05));
-				if(b_left == null)
-					return;
-				Coordinate t_left = env.world2image(location(cri_stop, lane_blocked - 0.05));
-				yellow_line.addPoint(b_left.x, b_left.y);
-				yellow_line.addPoint(t_left.x, t_left.y);
-				Coordinate b_right = env.world2image(location(cri_start, lane_blocked + 0.05));
-				Coordinate t_right = env.world2image(location(cri_stop, lane_blocked + 0.05));
-				yellow_line.addPoint(t_right.x, t_right.y);
-				yellow_line.addPoint(b_right.x, b_right.y);
-				g.fillPolygon(yellow_line);
+		if (env.scenario.construction) {
+			for (int i = 0; i < 3; i++) {
+				lane_blocked = 2;
+				lane_blocked += i;
+				if (env.world2image(location(cri_stop, lane_blocked - 0.05)) != null) {
+					Polygon yellow_line = new Polygon();
+					g.setColor(Color.yellow);
+					Coordinate b_left = env.world2image(location(cri_start, lane_blocked - 0.05));
+					if (b_left == null)
+						return;
+					Coordinate t_left = env.world2image(location(cri_stop, lane_blocked - 0.05));
+					yellow_line.addPoint(b_left.x, b_left.y);
+					yellow_line.addPoint(t_left.x, t_left.y);
+					Coordinate b_right = env.world2image(location(cri_start, lane_blocked + 0.05));
+					Coordinate t_right = env.world2image(location(cri_stop, lane_blocked + 0.05));
+					yellow_line.addPoint(t_right.x, t_right.y);
+					yellow_line.addPoint(b_right.x, b_right.y);
+					g.fillPolygon(yellow_line);
+				}
 			}
 		}
 	}

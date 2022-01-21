@@ -11,9 +11,9 @@
     :v t
     ;---
     :rt -100
-    :ans 0.4
-    :mp 19
-    :lf 1.0
+    :ans 0.2
+    :mp 15
+    :lf 1.2
     ;---
     ;:act t
     ;:brain-imaging t
@@ -39,9 +39,11 @@
         num 0
         nr 0
         rehearsal f
+        reset nil
     +imaginal>
         isa nback-state
         nbackspeed 60
+        id 0
         1back 0
     +temporal>
         isa time
@@ -56,12 +58,12 @@
         isa drive
         na nil
         - follow undecided
-        
     ?visual-location> 
         ;state free
         buffer empty
         - buffer requested
-        
+    ?retrieval>
+        state free
     ?visual>
         state free
         buffer empty
@@ -950,9 +952,9 @@
         fa2 nil
         fkind2 nil
         time2 nil
-    +visual-location>
-        isa visual-location
-        kind near
+        ;+visual-location>
+        ;isa visual-location
+        ;kind near
 )
 
 (p drive*follow-far2
@@ -1228,18 +1230,19 @@
 
 (spp :u 1000)
 
-;----------------- NBACK -----------------
+;;----------------- NBACK -----------------
 
-;nback and rehearsal are split in two parts:
-;part 1 (*): build list until n speed signs have been passed
-;part 2: perform n-back task
+;;nback and rehearsal are split in two parts:
+;;part 1 (*): build list until n speed signs have been passed
+;;part 2: perform n-back task
 
 (p nback-memorise-sign*
-        ;building the initial list
+        ;;building the initial list
     =goal>
         isa nback
+        ;status read-nback
         num =placeholder
-        < num 3
+        < num 1
     =visual>
         isa speedsign
         value =slimit
@@ -1250,14 +1253,13 @@
     =goal>
         isa nback
         status notice
-        num =num
         nr =nr
+        num =num
         rehearsal t
     =imaginal>
         isa nback-state
         id =cid
         slimit =slimit
-    -imaginal>
     +imaginal>
         isa nback-state
         1back =cid
@@ -1268,7 +1270,7 @@
     =goal>
         isa nback
         status read-nback
-        >= num 3
+        >= num 1
     =visual>
         isa speedsign
         value =slimit
@@ -1280,7 +1282,7 @@
     !bind! =nr (reset-rehearsal)
     !bind! =num (get-num-sign)
     =goal>
-        status remember1
+        status remember
         nr =nr
         num =num
     =imaginal>
@@ -1291,40 +1293,10 @@
         id =1back
 )
 
-(p nback-remember-sign-1back
+(p nback-remember-sign
     =goal>
         isa nback
-        status remember1
-    =retrieval>
-        isa nback-state
-        1back =1back
-==>
-    =goal>
-        status remember2
-    +retrieval>
-        isa nback-state
-        id =1back
-)
-
-(p nback-remember-sign-2back
-    =goal>
-        isa nback
-        status remember2
-    =retrieval>
-        isa nback-state
-        1back =1back
-==>
-    =goal>
-        status remember3
-    +retrieval>
-        isa nback-state
-        id =1back
-)
-
-(p nback-remember-sign-3back
-    =goal>
-        isa nback
-        status remember3        
+        status remember
     =retrieval>
         isa nback-state
         slimit =nbackspeed
@@ -1339,19 +1311,6 @@
         isa nback-state
         1back =1back
         nbackspeed =nbackspeed
-)
-
-(p nback-retrieval-failure
-    =goal>
-        isa nback
-        - status notice
-        - status read-nback
-    ?retrieval>
-        state error       
-==>
-    =goal>
-        status notice
-        rehearsal f
 )
 
 ;----------------- REHEARSAL* -----------------
@@ -1375,44 +1334,6 @@
     -retrieval>
 )
 
-(p nback-rehearse-sign1*
-    =goal>
-        isa nback
-        status rehearse1
-        <= num 2
-    =retrieval>
-        isa nback-state
-        1back =1back
-    ?visual-location>
-        - state error
-        - buffer requested
-        buffer empty
-==>
-    =goal>
-        status notice
-    =retrieval>
-    -retrieval>
-)
-
-(p nback-rehearse-sign2*
-    =goal>
-        isa nback
-        status rehearse2 
-        <= num 3
-    =retrieval>
-        isa nback-state
-        1back =1back
-    ?visual-location>
-        - state error
-        - buffer requested
-        buffer empty
-==>    
-    =goal>
-        status notice
-    =retrieval>
-    -retrieval>
-)
-
 ;----------------- REHEARSAL -----------------
 
 (p nback-start-rehearsal
@@ -1420,7 +1341,7 @@
         isa nback
         status notice
         rehearsal t
-        < nr 3000
+        < nr 8
         >= num 1
     =imaginal>
         isa nback-state
@@ -1439,7 +1360,6 @@
         isa nback-state
         id =1back
 )
-
 
 (p nback-rehearse-sign0
     =goal>
@@ -1465,47 +1385,7 @@
     =goal>
         isa nback
         status rehearse1
-        > num 2
-    =retrieval>
-        isa nback-state
-        1back =1back
-    ?visual-location>
-        - state error
-        - buffer requested
-        buffer empty
-==>
-    =goal>
-        status rehearse2
-    +retrieval>
-        isa nback-state
-        id =1back
-)
-
-(p nback-rehearse-sign2
-    =goal>
-        isa nback
-        status rehearse2
-        > num 3
-    =retrieval>
-        isa nback-state
-        1back =1back
-    ?visual-location>
-        - state error
-        - buffer requested
-        buffer empty
-==>
-    =goal>
-        status rehearse3
-    +retrieval>
-        isa nback-state
-        id =1back
-)
-
-(p nback-rehearse-sign3
-    =goal>
-        isa nback
-        status rehearse3
-        >= num 4
+        >= num 2
     =retrieval>
         isa nback-state
         1back =1back
@@ -1516,6 +1396,8 @@
 ==>
     =goal>
         status notice
+    =retrieval>
+    -retrieval>
 )
 
 (p nback-interrupt-rehearsing-notice-sign
@@ -1550,5 +1432,7 @@
     (160 80 -0.8) (160 100 -0.4) (160 120 -0.2) (160 140 -0.1) (160 160 0) (160 180 -0.1)
     (180 100 -0.8) (180 120 -0.4) (180 140 -0.2) (180 160 -0.1) (180 180 0) 
 )
+
+
 (goal-focus goal1)
 (goal-focus goal2)

@@ -11,9 +11,9 @@
     :v t
     ;---
     :rt -100
-    :ans 0.4
-    :mp 19
-    :lf 1.0
+    :ans 0.2
+    :mp 15
+    :lf 1.2
     ;---
     ;:act t
     ;:brain-imaging t
@@ -61,7 +61,8 @@
         ;state free
         buffer empty
         - buffer requested
-        
+    ?retrieval>
+        state free
     ?visual>
         state free
         buffer empty
@@ -1420,7 +1421,7 @@
         isa nback
         status notice
         rehearsal t
-        < nr 3000
+        < nr 8
         >= num 1
     =imaginal>
         isa nback-state

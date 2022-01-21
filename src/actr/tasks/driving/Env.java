@@ -43,9 +43,11 @@ public class Env {
 		road.vehicleReset(autocar, 2, 150);
 
 		speedsign = new Speedsign();
-
 		construction = new Construction();
 
+		if (scenario.construction) {
+			construction.constructionStartup();
+		}
 		done = false;
 	}
 
@@ -53,7 +55,9 @@ public class Env {
 		speedsign.update(this);
 		simcar.update(this);
 		autocar.update(this);
-		construction.update(this);
+		if (scenario.construction) {
+			construction.update(this);
+		}
 	}
 
 	void draw(Graphics g) {

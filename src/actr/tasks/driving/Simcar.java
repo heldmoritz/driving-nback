@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.Random;
+
 
 /**
  * The driver's own vehicle and its controls.
@@ -26,6 +28,13 @@ public class Simcar extends Vehicle {
 	double dist_to_nearest_lane;
 	double diffDist;
 	boolean turning;
+	double imagined_speed;
+
+	// anandi
+	double mentalSpeed = 0; 
+	double roughSpeed; 
+	double prevTime = 0; 
+	double prevDist = 0; 
 
 	public Simcar(Driver driver, Env env) {
 		super();
@@ -35,8 +44,9 @@ public class Simcar extends Vehicle {
 		steerAngle = 0;
 		accelerator = 0;
 		brake = 0;
-		speed = 0;
+		speed = 60;
 		lane = 2;
+		imagined_speed = 0;
 	}
 
 	int order = 6;
@@ -135,7 +145,7 @@ public class Simcar extends Vehicle {
 				car_speed = 0.0;
 		}
 
-		car_steer = steerAngle;
+		car_steer = env.time < 5 ? 0 : steerAngle; // bug in the construction condition makes the far points go back and messes up the sim.
 		car_accel_pedal = accelerator;
 		car_brake_pedal = brake;
 
@@ -206,14 +216,34 @@ public class Simcar extends Vehicle {
 		double distRight = env.simcar.p.z - env.road.right(env.simcar.fracIndex, lane).z;
 		dist_to_nearest_lane = Utilities.absoluteMin(distLeft, distRight);
 		diffDist = Math.abs(distLeft) - Math.abs(distRight); //positive -> should drive to the right
+		//calcSpeedEstimate(env);
 	}
 
 	void update(Env env) {
-		updateDynamics(env);
 
+		updateDynamics(env);
 		nearPoint = env.road.nearPoint(this, lane);
 		farPoint = env.road.farPoint(this, lane);
 		carPoint = env.autocar.p;
+	}
+
+	void calcSpeedEstimate(Env env){
+		Random r = new Random();
+		double noise = (r.nextGaussian())*0.01;
+
+		// below Anandi
+		double diffDist = fracIndex - prevDist; 
+		double dTime = env.time - prevTime;
+		if (diffDist != 0 && dTime != 0)
+			roughSpeed = (diffDist/dTime) + noise; //diffDist / dTime + noise; 
+		else
+			roughSpeed = noise; 
+
+		prevTime = env.time;
+		prevDist = env.simcar.fracIndex;
+		double updatedSpeed = (env.simcar.imagined_speed + roughSpeed)/2;
+		env.simcar.imagined_speed = updatedSpeed; 
+		System.out.println("calc: " + (roughSpeed) + " imagined speed: " + env.simcar.imagined_speed + " noise: " + noise);
 	}
 
 	void draw(Graphics g, Env env) {

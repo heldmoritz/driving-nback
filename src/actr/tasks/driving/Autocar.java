@@ -38,40 +38,40 @@ public class Autocar extends Vehicle {
 		// autocar switch lane when simcar is in front of the autocar
 		if (env.simcar.fracIndex - fracIndex > 0) {
 			if (env.simcar.lane != 1) {
-				if (env.simcar.lane == 2 && env.construction.construction_vis == false)
+				if (env.simcar.lane == 2 && env.construction.constructionVis == false)
 					lane = 1;
-				else if (env.simcar.lane == 2 && env.construction.construction_vis) {
+				else if (env.simcar.lane == 2 && env.construction.constructionVis) {
 					lane = 2;
 					speed = env.simcar.speed;
 					fracIndex = env.simcar.fracIndex - 20;
 				} else if (env.simcar.lane == 3) {
 					lane = Math.random() > 0.5 ? 2 : 1;
-					lane = env.construction.construction_vis ? 2 : lane;
+					lane = env.construction.constructionVis ? 2 : lane;
 
-				} else if (env.simcar.lane % 1 != 0) {
+				} else if (lane % 1 != 0) {
 					lane = 2;
 					speed = env.simcar.speed;
 					fracIndex = env.simcar.fracIndex - 20;
 				}
 			}
 		} else {
-			if (lane == (int) env.simcar.lane && env.construction.construction_vis
+			if (lane == (int) env.simcar.lane && env.construction.constructionVis
 					&& fracIndex - env.simcar.fracIndex < 40) {
 				changeStart = env.time;
 				fl = Math.min(lane + 1, 3);
 				turn = true;
-			} else if (lane == 1 && env.construction.construction_vis) {
+			} else if (lane == 1 && env.construction.constructionVis) {
 				changeStart = env.time;
 				fl = Math.min(lane + 1, 3);
 				turn = true;
-			} else if (lane == 1 && env.simcar.lane < 2 && env.construction.construction_vis == false){
+			} else if (lane == 1 && env.simcar.lane < 2 && env.construction.constructionVis == false){
 				changeStart = env.time;
 				fl = Math.min(lane + 2, 3);
 				turn = true;
 			}
 		}
 
-		if (env.construction.construction_vis && env.simcar.lane != 3) {
+		if (env.construction.constructionVis && env.simcar.lane != 3) {
 			if (env.simcar.lane >= lane) {
 				changeStart = env.time;
 				fl = 3;
@@ -108,7 +108,7 @@ public class Autocar extends Vehicle {
 	void switchLane(double fl, Env env) {
 
 		Position fp = env.road.middle(fracIndex, fl);
-		double lw = env.construction.construction_bool ? Env.scenario.lanewidth[1] : Env.scenario.lanewidth[0];
+		double lw = Env.scenario.construction ? Env.scenario.lanewidth[0] : Env.scenario.lanewidth[1];
 		double inc = ((Math.abs((fp.z - env.road.middle(fracIndex, (int) lane).z)) / (20 * ot))) / lw;
 		inc = p.z > fp.z ? inc * (-1) : inc;
 
@@ -137,8 +137,6 @@ public class Autocar extends Vehicle {
 		if (im1 != null && im2 != null) {
 			g.setColor(Color.blue);
 			g.fillRect(im1.x, im2.y, im2.x - im1.x, im1.y - im2.y);
-		} else {
-
-		}
+		} 
 	}
 }

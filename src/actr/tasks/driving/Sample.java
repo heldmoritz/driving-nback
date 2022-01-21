@@ -6,12 +6,12 @@ package actr.tasks.driving;
  * @author Dario Salvucci
  */
 public class Sample {
-    double time;
+    String time;
     Position simcarPos, simcarHeading;
     double simcarFracIndex, simcarSpeed;
     long simcarRoadIndex;
     Position nearPoint, farPoint, carPoint;
-    double steerAngle, accelerator, brake;
+    String steerAngle, accelerator, brake;
     Position autocarPos, autocarHeading;
     double autocarFracIndex, autocarSpeed;
     boolean autocarBraking;;
@@ -47,7 +47,7 @@ public class Sample {
     }
 
     public String toString() {
-        return +time + "\t" + simcarPos + "\t" + simcarHeading + "\t" + simcarFracIndex + "\t" + simcarSpeed + "\t"
+        return time + "\t" + simcarPos + "\t" + simcarHeading + "\t" + simcarFracIndex + "\t" + simcarSpeed + "\t"
                 + simcarRoadIndex + "\t" + eyeLocation + "\t" + nearPoint + "\t" + farPoint + "\t" + carPoint + "\t"
                 + steerAngle + "\t" + accelerator + "\t" + brake + "\t" + autocarPos + "\t" + autocarHeading + "\t"
                 + autocarFracIndex + "\t" + autocarSpeed + "\t" + currentspeed + "\t" + imaginedSpeedlimit + "\t"
@@ -55,7 +55,7 @@ public class Sample {
     }
 
     public String toStringSep() {
-        return +time + "|" + simcarPos + "|" + simcarHeading + "|" + simcarFracIndex + "|" + simcarSpeed + "|"
+        return time + "|" + simcarPos + "|" + simcarHeading + "|" + simcarFracIndex + "|" + simcarSpeed + "|"
                 + simcarRoadIndex + "|" + eyeLocation + "|" + nearPoint + "|" + farPoint + "|" + carPoint + "|"
                 + steerAngle + "|" + accelerator + "|" + brake + "|" + autocarPos + "|" + autocarHeading + "|"
                 + autocarFracIndex + "|" + autocarSpeed + "|" + currentspeed + "|" + imaginedSpeedlimit + "|" + lanepos

@@ -1,10 +1,8 @@
 package actr.tasks.driving;
 
 import java.awt.Graphics;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
-
 import actr.model.Model;
 
 /**
@@ -64,7 +62,7 @@ public class Simulation {
 
 	Sample recordSample(Env env) {
 		Sample s = new Sample();
-		s.time = env.time;
+		s.time = (String.format("%.2f", env.time));
 		s.simcarPos = env.simcar.p.myclone();
 		s.simcarHeading = env.simcar.h.myclone();
 		s.simcarFracIndex = env.simcar.fracIndex;
@@ -74,9 +72,9 @@ public class Simulation {
 			s.nearPoint = env.simcar.nearPoint.myclone();
 			s.farPoint = env.simcar.farPoint.myclone();
 		}
-		s.steerAngle = env.simcar.steerAngle;
-		s.accelerator = env.simcar.accelerator;
-		s.brake = env.simcar.brake;
+		s.steerAngle = String.format("%.2f", env.simcar.steerAngle);
+		s.accelerator = String.format("%.2f", env.simcar.accelerator);
+		s.brake = String.format("%.2f", env.simcar.brake);
 		s.autocarPos = env.autocar.p.myclone();
 		s.autocarFracIndex = env.autocar.fracIndex;
 		s.autocarSpeed = env.autocar.speed;
@@ -104,7 +102,7 @@ public class Simulation {
 		// mlh
 		s.currentspeed = Integer.parseInt(env.speedsign.speedlimit);
 		s.imaginedSpeedlimit = Driving.imaginedSpeedlimit;
-		s.visAttention = env.construction.construction_bool ? "construction" : "highway";
+		s.visAttention = env.construction.constructionBool ? "construction" : "highway";
 		s.turning = env.simcar.turning;
 		if (env.simcar.turning)
 			env.simcar.turning = false;
@@ -139,7 +137,7 @@ public class Simulation {
 
 	Results analyze()
 
-	{
+	{/*
 		// double startTime = 0;
 		double stopTime = 1000; // def -1000
 
@@ -231,7 +229,7 @@ public class Simulation {
 		r.laneViolations = laneViolations;
 
 		return r;
-
+*/return null;
 	}
 
 	Results myAnalyze() {

@@ -38,6 +38,7 @@ public class Model {
 	boolean runUntilStop = false;
 	boolean bufferStuffing = true;
 	boolean boldOut = false; // mlh
+	public boolean construction = false;
 	public boolean behaviorOut;
 	public boolean traceOut;
 	double qs = 0.0;
