@@ -28,7 +28,6 @@ public class Simcar extends Vehicle {
 	double dist_to_nearest_lane;
 	double diffDist;
 	boolean turning;
-	double imagined_speed;
 
 	// anandi
 	double mentalSpeed = 0; 
@@ -46,7 +45,6 @@ public class Simcar extends Vehicle {
 		brake = 0;
 		speed = 60;
 		lane = 2;
-		imagined_speed = 0;
 	}
 
 	int order = 6;
@@ -216,7 +214,6 @@ public class Simcar extends Vehicle {
 		double distRight = env.simcar.p.z - env.road.right(env.simcar.fracIndex, lane).z;
 		dist_to_nearest_lane = Utilities.absoluteMin(distLeft, distRight);
 		diffDist = Math.abs(distLeft) - Math.abs(distRight); //positive -> should drive to the right
-		//calcSpeedEstimate(env);
 	}
 
 	void update(Env env) {
@@ -225,25 +222,6 @@ public class Simcar extends Vehicle {
 		nearPoint = env.road.nearPoint(this, lane);
 		farPoint = env.road.farPoint(this, lane);
 		carPoint = env.autocar.p;
-	}
-
-	void calcSpeedEstimate(Env env){
-		Random r = new Random();
-		double noise = (r.nextGaussian())*0.01;
-
-		// below Anandi
-		double diffDist = fracIndex - prevDist; 
-		double dTime = env.time - prevTime;
-		if (diffDist != 0 && dTime != 0)
-			roughSpeed = (diffDist/dTime) + noise; //diffDist / dTime + noise; 
-		else
-			roughSpeed = noise; 
-
-		prevTime = env.time;
-		prevDist = env.simcar.fracIndex;
-		double updatedSpeed = (env.simcar.imagined_speed + roughSpeed)/2;
-		env.simcar.imagined_speed = updatedSpeed; 
-		System.out.println("calc: " + (roughSpeed) + " imagined speed: " + env.simcar.imagined_speed + " noise: " + noise);
 	}
 
 	void draw(Graphics g, Env env) {

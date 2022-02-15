@@ -6,6 +6,8 @@ import java.io.*;
 import actr.env.*;
 //import actr.model.Bold.Activity;
 import actr.task.Task;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The highest-level class representing an ACT-R model.
@@ -48,7 +50,6 @@ public class Model {
 	List<String> trace = new ArrayList<String>();
 	List<String> state_output = new ArrayList<String>();
 	public static String outputPath = "";
-
 
 	private Model(Frame frame) {
 		this.frame = frame;
@@ -453,12 +454,12 @@ public class Model {
 			if (bold.brainImaging == false)
 				Bold.output.add("Error: :brain-imaging parameter is set to 'nil' ");
 			String filename = "_bold_";
-			print(Bold.output, filename, subj);
+			print(Bold.output, filename);
 			Bold.output = new ArrayList<String>();
 		}
 		if (frame.traceOut) {
 			String filename = "_trace_";
-			print(trace, filename, subj);
+			print(trace, filename);
 		}
 	}
 
@@ -792,12 +793,15 @@ public class Model {
 	}
 
 	// mlh
-	public void print(List<String> output, String filename, int participant) {
+	
+	public void print(List<String> output, String filename) {
 
+		int participant = getLastParticipant() + 1;
 		String nbackLevel = Main.core.getFilename();
 		nbackLevel = nbackLevel.replace(".actr", "");
 		try {
-			FileWriter writer = new FileWriter(outputPath + nbackLevel + filename + String.format("%02d", participant) + ".txt");
+			FileWriter writer = new FileWriter(
+					outputPath + nbackLevel + filename + String.format("%03d", participant) + ".txt");
 			for (String str : output) {
 				writer.write(str);
 			}
@@ -805,6 +809,32 @@ public class Model {
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
+	}
+
+	public int getLastParticipant(){
+
+		// get participant number 
+		File folder = new File(outputPath);
+		File[] allFiles = folder.listFiles();
+		ArrayList<File> listOFiles = new ArrayList<File>();
+
+		for (int i = 0; i<allFiles.length;i++){
+			String myFilename = allFiles[i].toString();
+			if(myFilename.contains("behavior_"))
+				listOFiles.add(allFiles[i]);
+		}
+		int numberString = 0;
+
+		for (int i = 0; i < listOFiles.size(); i++){
+			String myPath = listOFiles.get(i).toString();
+			int startPos = myPath.lastIndexOf("_");
+			int dotPos = myPath.indexOf(".");
+			int newMax = Integer.parseInt(myPath.substring(startPos + 1, dotPos));
+			if (newMax > numberString)
+				numberString = newMax;
+		}
+
+		return numberString;
 
 	}
 }

@@ -11,9 +11,9 @@
     :v t
     ;---
     :rt -100
-    :ans 0.4
-    :mp 19
-    :lf 1.0
+    :ans 0.3
+    :mp 25
+    :lf 0.5
     ;---
     ;:act t
     ;:brain-imaging t
@@ -22,7 +22,7 @@
 
 (add-dm    
     (goal1 isa nback status start)
-    (goal2 isa drive follow far sl 2)
+    (goal2 isa drive follow far sl 2 nbackspeed 60 lookSpeedometer 25)
 )
 (set-all-base-levels 10000)
 
@@ -39,14 +39,15 @@
         num 0
         nr 0
         rehearsal f
-    +imaginal>
-        isa nback-state
         nbackspeed 60
-        1back 0
     +temporal>
         isa time
         ticks clear
-        ;-visual-location>
+    +imaginal>
+        isa nback-state
+        id 0
+    -imaginal>
+        ;-visual-location>)
 )
 
 ;----------------- DRIVING -----------------
@@ -61,7 +62,8 @@
         ;state free
         buffer empty
         - buffer requested
-        
+    ?imaginal>
+        state free
     ?visual>
         state free
         buffer empty
@@ -74,6 +76,78 @@
         kind near
 )
 
+(p attend-speedometer
+    =goal>
+        isa drive
+        lookSpeedometer =ticks
+        ;?visual-location>
+        ;state free
+        ;buffer empty
+    ?imaginal>
+        state free 
+        buffer empty
+    =temporal>
+        isa time
+        > ticks =ticks
+==>
+    =goal>
+        isa drive
+    +visual-location>
+        isa visual-location
+        kind speedometer
+    +temporal>
+        isa time
+        ticks clear
+)
+(p process-speedometer
+    =goal>
+        isa drive
+    ?visual>
+        state free
+        buffer empty
+    =visual-location>
+        isa visual-location
+        kind speedometer
+==>
+    =goal>
+    +visual>
+        isa move-attention
+        screen-pos =visual-location
+)
+
+(p speed-to-imaginal
+    =goal>
+        isa drive
+    =visual>
+        isa speedometer
+        value =speed
+    ?imaginal>
+        state free
+        buffer empty
+==>
+    =goal>
+        isa drive
+    +imaginal>
+        isa speed
+        carspeed =speed
+)
+
+(p update-representation-speed
+    =goal>
+        isa drive
+        nbackspeed =nbackspeed
+    =imaginal>
+        isa speed
+        carspeed =carspeed
+==>
+    !bind! =ticks (calculate-ticks =carspeed =nbackspeed)
+    !eval! (update-speed =nbackspeed)
+    !eval! (keep-limit =nbackspeed)
+    =goal>
+        isa drive
+        lookSpeedometer =ticks
+)
+
 (p drive*eval-safety-safe
     =goal>
         isa drive
@@ -81,6 +155,7 @@
         - follow undecided
         ;- na nil
         ;- na2 nil
+        nbackspeed =nbackspeed
     =visual-location>
         isa visual-location
         kind near
@@ -91,15 +166,12 @@
         state free
         buffer empty
     !eval! (safe-zone)
-    =imaginal>
-        nbackspeed =nbackspeed
 ==>
     !eval! (keep-limit =nbackspeed)
     =goal>
         isa drive
         safe t
         ;-visual-location>
-    =imaginal>
 )
 
 (p drive*eval-safety-unsafe*
@@ -211,6 +283,7 @@
         fkind2 =fkind
         fthw2  =fthw2
         time2  =time2
+        nbackspeed =nbackspeed
     =visual-location>
         isa visual-location
         kind far 
@@ -220,8 +293,6 @@
     ?visual>
         state free
         buffer empty
-    =imaginal>
-        nbackspeed =nbackspeed
 ==>
     !bind! =fa (image->angle =fx =fd)
     !bind! =time (mp-time)
@@ -246,7 +317,6 @@
         dthw =dthw
         v =v
         done t
-    =imaginal>
     +visual>
         isa move-attention
         screen-pos =visual-location
@@ -262,6 +332,7 @@
         fkind2 =fkind
         fthw2  =fthw2
         time2  =time2
+        nbackspeed =nbackspeed
     =visual-location>
         isa visual-location
         kind car 
@@ -271,8 +342,6 @@
     ?visual>
         state free
         buffer empty
-    =imaginal>
-        nbackspeed =nbackspeed
 ==>
     !bind! =fa (image->angle =fx =fd)
     !bind! =time (mp-time)
@@ -298,7 +367,6 @@
         dthw =dthw
         v =v
         done t
-    =imaginal>
     +visual>
         isa move-attention
         screen-pos =visual-location
@@ -1210,6 +1278,7 @@
 (p notice-sign
     =goal>
         isa nback
+        status notice
     =visual-location>
         isa visual-location
         kind speedsign
@@ -1229,25 +1298,47 @@
 
 ;----------------- NBACK -----------------
 
-(p follow-0back
+(p nback-memorise-sign
+        ;;building the initial list
     =goal>
         isa nback
         status read-nback
+        num =placeholder
     =visual>
         isa speedsign
-        value =tlimit
-    =imaginal>
-        isa nback-state
-    ?retrieval>
-        buffer empty
+        value =slimit
 ==>
-    =imaginal>
-        nbackspeed =tlimit
+    !bind! =cid (get-chunk-id)
+    !bind! =num (get-num-sign)
+    !bind! =nr (reset-rehearsal)
     =goal>
         isa nback
         status notice
+        nr =nr
+        num =num
+        rehearsal t
+    +imaginal>
+        isa nback-state
+        id =cid
+        slimit =slimit
 )
 
+(p follow-0back
+    =goal>
+        isa drive
+    =imaginal>
+        isa nback-state
+        id =cid
+        slimit =slimit
+    ?retrieval>
+        buffer empty
+==>
+    =goal>
+        isa drive
+        nbackspeed =slimit
+        lookSpeedometer 0
+    -imaginal>
+)
 (goal-focus goal1)
 (goal-focus goal2)
 

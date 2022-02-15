@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.lang.model.util.ElementScanner14;
 import javax.swing.JLabel;
 
 import actr.task.Result;
@@ -28,14 +29,14 @@ public class Driving extends actr.task.Task {
 	JLabel nearLabel, farLabel, signLabel, carLabel, speedoLabel, leftmirrorLabel, rightmirrorLabel, leftLaneLabel,
 			rightLaneLabel, construction;
 
-	final double scale = .85; // .85 //.6
+	final double scale = 0.95;//1.1; // .85 //.6
 	final double steerFactor_dfa = (16 * scale); // defaults to 16
 	final double steerFactor_dna = (4 * scale); // defaults to 4
 	final double steerFactor_na = (3 * scale); // defaults to 3
 	final double steerFactor_fa = (0 * scale); // defaults to 0
-	final double accelFactor_thw = (5 * .40); // defaults to 1*0.4
-	final double accelFactor_dthw = (15 * .40);
-	final double steerNaMax = .04;
+	final double accelFactor_thw = (1 * .40); // defaults to 1*0.4
+	final double accelFactor_dthw = (5 * .40);
+	final double steerNaMax = .03;//.04;
 	final double thwFollow = 1.0;
 	final double thwMax = 5.0;
 
@@ -65,11 +66,7 @@ public class Driving extends actr.task.Task {
 	boolean previousSafe = false;
 	double switch_to_safe = 0;
 
-	// anandi
-	double mentalSpeed = 0; 
-	double roughSpeed; 
-	double prevTime = 0; 
-	double prevDist = 0; 
+	double imagined_tlimit = 0;
 
 	public Driving() {
 		super();
@@ -152,26 +149,27 @@ public class Driving extends actr.task.Task {
 		Env env = simulation.env;
 		if (time <= endTime) {
 			/*
-			if (env.road.block < simulation.scenario.blocks) {
-				env.time = time - startTime;
-				updateVisuals();
-				simulation.update();
-				env.simcar.driver.update(getModel());
-				if (env.simcar.fracIndex > Env.scenario.blockLength * env.road.block)
-					env.road.block++;
-			} else {
-				*/
-				env.time = time - startTime;
-				updateVisuals();
-				simulation.update();
-				env.simcar.driver.update(getModel());				
-				// simulation.model.print(simulation.samples, filename, simulation.model.subj);
+			 * if (env.road.block < simulation.scenario.blocks) {
+			 * env.time = time - startTime;
+			 * updateVisuals();
+			 * simulation.update();
+			 * env.simcar.driver.update(getModel());
+			 * if (env.simcar.fracIndex > Env.scenario.blockLength * env.road.block)
+			 * env.road.block++;
+			 * } else {
+			 */
 			
-		}else{
+			env.time = time - startTime;
+			updateVisuals();
+			simulation.update();
+			env.simcar.driver.update(getModel());
+			// simulation.model.print(simulation.samples, filename, simulation.model.subj);
+
+		} else {
 			String filename = "_behavior_";
 			if (simulation.model.behaviorOut) {
 				List<String> output = output(simulation.samples);
-				simulation.model.print(output, filename, simulation.model.subj);
+				simulation.model.print(output, filename);
 			}
 			getModel().stop();
 		}
@@ -317,14 +315,16 @@ public class Driving extends actr.task.Task {
 				if (getModel().getVision().visualObjects().contains("construction") == false) {
 					Position pos = env.road.middle(env.construction.startCon, 1);
 					Coordinate ccc = env.world2image(pos);
-					//getModel().getVision().addVisual("construction", "construction", "start", ccc.x, ccc.y, 20, 20, 1);
+					// getModel().getVision().addVisual("construction", "construction", "start",
+					// ccc.x, ccc.y, 20, 20, 1);
 				}
 			} else if (env.simcar.fracIndex < env.construction.stopCon + 10) {
 				if (getModel().getVision().visualObjects().contains(" end ") == false) {
-					//getModel().getVision().removeVisual("construction");
+					// getModel().getVision().removeVisual("construction");
 					Position pos = env.road.middle(env.simcar.fracIndex + 10, 1);
 					Coordinate ccc = env.world2image(pos);
-					//getModel().getVision().addVisual("construction", "construction", "end", ccc.x, ccc.y, 20, 20, 1);
+					// getModel().getVision().addVisual("construction", "construction", "end",
+					// ccc.x, ccc.y, 20, 20, 1);
 				}
 			} else {
 				getModel().getVision().removeVisual("construction");
@@ -382,23 +382,31 @@ public class Driving extends actr.task.Task {
 		simcar.accelerator = (accelBrake >= 0) ? accelBrake : 0;
 		simcar.brake = (accelBrake < 0) ? -accelBrake : 0;
 	}
-	void keepLimit(double tlimit) {
-		Random r = new Random();
-		double noise = 0;//(r.nextGaussian())*0.01;
 
+	double calcTlimitEstimate(double tlimit) {
+		Random r = new Random();
+		double noise = r.nextGaussian()*0.01;
+
+		// below Anandi
+		double roughLimit = (tlimit) + noise; // diffDist / dTime + noise;
+		imagined_tlimit = (roughLimit + tlimit) / 2;
+
+		return imagined_tlimit;
+	}
+
+	void keepLimit(double tlimit) {
 		Env env = simulation.env;
 		imaginedSpeedlimit = Integer.toString((int) tlimit); // for sampling
 		Simcar simcar = simulation.env.simcar;
-		double speed = simcar.speed; //simcar.speed;
+		double speed = simcar.speed;
 		tlimit = Utilities.mph2mps(Utilities.kph2mph(tlimit));
-		System.out.println(" speed: " + speed + " tlimit: " + tlimit);
-		// double diff = (tlimit - speed);
+		tlimit = calcTlimitEstimate(tlimit);
 
-		if (Math.abs(tlimit - speed) > 0) {
-			// double dacc = (dthw * accelFactor_dthw 1.2)
-			// + (dt * (fthw - thwFollow 1.0) * accelFactor_thw 0.4);
-			// double dacc = diff/100;
-			// accelBrake += dacc;
+		if (env.time <= 5.0) {
+			accelBrake = .65 * (simulation.env.time / 3.0);
+			accelBrake = minSigned(accelBrake, .65);
+		} else if (Math.abs(tlimit - speed) > 0) {
+
 			double fp = env.simcar.p.x;
 			double dt = env.time - st; // delta time
 			double tr = tlimit * dt; // in meters
@@ -408,9 +416,24 @@ public class Driving extends actr.task.Task {
 			double thw = Math.min(dist / speed, 4.0);
 			double dhw = thw - othw;
 			double dacc = (dhw * accelFactor_dthw) + (dt * (thw) * accelFactor_thw);
-			// double dacc = dhw + (Env.sampleTime* (-dhw));
-			accelBrake += dacc + noise;
+			accelBrake += dacc; // XXX
 			accelBrake = minSigned(accelBrake, 1.0);
+
+			//System.out.println("Time: " + env.time + " fp: " + env.simcar.p.x + " dt: " + dt + " tr: " + tr + " ftr: "
+			//		+ ftr + " newfp: " + fp + " dist: " + dist + " thw: " + thw + " dhw: " + dhw + " dacc " + dacc
+			//		+ " accelBrake " + accelBrake);
+
+			othw = thw;
+			st = env.time;
+		} else {
+			double fp = env.simcar.p.x;
+			double dt = env.time - st;
+			double tr = tlimit * dt;
+			double ftr = speed * dt;
+			fp = fp - ftr + tr;
+
+			double dist = fp - env.simcar.p.x;
+			double thw = Math.min(dist / speed, 4.0);
 			othw = thw;
 			st = env.time;
 		}
@@ -435,7 +458,7 @@ public class Driving extends actr.task.Task {
 			double rightLane = env.road.right(env.simcar.fracIndex, env.simcar.lane).z;
 			boolean b = carPosition > leftLane + (safeDistance + carWidth / 2)
 					&& carPosition < rightLane - (safeDistance + carWidth / 2) && Math.abs(steerAngle) < 0.05;
-			
+
 			if (b == false) {
 				switch_to_safe = env.time;
 			}
@@ -498,26 +521,6 @@ public class Driving extends actr.task.Task {
 		env.simcar.lane += dir == "left" ? -1 : 1;
 	}
 
-	void calcSpeedEstimate(){
-		Env env = simulation.env;
-		Random r = new Random();
-		double noise = (r.nextGaussian())*0.01;
-
-		// below Anandi
-		double diffDist = env.simcar.fracIndex - prevDist; 
-		double dTime = simulation.env.time - prevTime;
-		if (diffDist != 0 && dTime != 0)
-			roughSpeed = (diffDist/dTime) + noise; //diffDist / dTime + noise; 
-		else
-			roughSpeed = noise; 
-
-		prevTime = simulation.env.time;
-		prevDist = env.simcar.fracIndex;
-		double updatedSpeed = (env.simcar.imagined_speed + roughSpeed)/2;
-		env.simcar.imagined_speed = updatedSpeed; 
-		System.out.println("calc: " + (roughSpeed) + " imagined speed: " + env.simcar.imagined_speed + " noise: " + noise);
-	}
-
 	public void eval(Iterator<String> it) {
 		it.next();
 		String cmd = it.next();
@@ -545,11 +548,12 @@ public class Driving extends actr.task.Task {
 			changeLane("left");
 		} else if (cmd.equals("change-lane-right")) {
 			changeLane("right");
-		} else if (cmd.equals("update-speed")){
-			double speed = Double.valueOf(it.next());
-			simulation.env.simcar.imagined_speed = 1000000;//Utilities.mph2mps(Utilities.kph2mph(speed));
-		} else if (cmd.equals("calc-rough-speed")){
-				//calcSpeedEstimate();
+		} else if (cmd.equals("update-speed")) {
+			// simulation.env.simcar.imagined_speed = simulation.env.simcar.speed;
+			double tlimit = Double.valueOf(it.next());
+			imagined_tlimit = tlimit;
+		} else if (cmd.equals("calc-rough-speed")) {
+			// calcSpeedEstimate();
 		} else if (cmd.equals("placeholder")) {
 			//
 		}
@@ -621,6 +625,18 @@ public class Driving extends actr.task.Task {
 			return false;
 	}
 
+	int ticksCalculator(double speed, double tlimit) {
+		double diff = Math.abs(tlimit - speed);
+		double timeMultiplier = 20;
+		double bias = 25;
+
+		double ticks = -diff + 40;// 1 / Math.log10(diff) * timeMultiplier - bias;
+		if (ticks<0)
+			ticks = 99;
+		ticks = Math.min(Math.max(20, ticks), 60);
+		return (int) ticks;
+	}
+
 	public double bind(Iterator<String> it) {
 		try {
 			it.next(); // (
@@ -660,6 +676,10 @@ public class Driving extends actr.task.Task {
 			} else if (cmd.equals("simcar-lane")) {
 				// what lane am I driving on?
 				return simulation.env.simcar.lane;
+			} else if (cmd.equals("calculate-ticks")) {
+				double speed = Double.valueOf(it.next());
+				double tlimit = Double.valueOf(it.next());
+				return ticksCalculator(speed, tlimit);
 			} else if (cmd.equals("placeholder")) {
 				return 0;
 			} else

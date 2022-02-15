@@ -629,7 +629,6 @@ public class Vision extends Module {
 						eyeX = vo.x + (int) (Math.round(gaussianNoise(sd)));
 						eyeY = vo.y + (int) (Math.round(gaussianNoise(sd)));
 						model.getTask().moveEye(eyeX, eyeY);
-
 						if (vo.encodingStart + vo.encodingTime > model.getTime()) {
 							double completed = (model.getTime() - vo.encodingStart) / vo.encodingTime;
 							double newEncodingTime = computeEncodingTime(vo);

@@ -108,7 +108,8 @@ public class Simulation {
 			env.simcar.turning = false;
 		s.block = env.road.block;
 		s.followedLane = env.simcar.lane;
-		s.eyeLocation = env.simcar.driver.eyeLocation;
+		s.eyeLocationX = env.simcar.driver.eyeLocation.x;
+		s.eyeLocationY = env.simcar.driver.eyeLocation.y;
 		s.signVis = env.speedsign.visible;
 		return s;
 	}

@@ -26,12 +26,14 @@ public class Sample {
     String imaginedSpeedlimit, visAttention;
     boolean turning;
     double lanepos;
-    Coordinate eyeLocation;
+    int eyeLocationX;
+    int eyeLocationY;
     boolean signVis;
-    
+
     public String listVars() {
         return "time" + "\t" + "simcarPos" + "\t" + "simcarHeading" + "\t" + "simcarFracIndex" + "\t" + "simcarSpeed"
-                + "\t" + "simcarRoadIndex" + "\t" + "eyeLocation" + "\t" + "nearPoint" + "\t" + "farPoint" + "\t"
+                + "\t" + "simcarRoadIndex" + "\t" + "eyeLocationX" + "\t" + "eyeLocationY" + "\t" + "nearPoint" + "\t"
+                + "farPoint" + "\t"
                 + "carPoint" + "\t" + "steerAngle" + "\t" + "accelerator" + "\t" + "brake" + "\t" + "autocarPos" + "\t"
                 + "autocarHeading" + "\t" + "autocarFracIndex" + "\t" + "autocarSpeed" + "\t" + "currentspeed" + "\t"
                 + "imaginedSpeedlimit" + "\t" + "lanepos" + "\t" + "followedLane" + "\t" + "visAttention" + "\t"
@@ -40,15 +42,18 @@ public class Sample {
 
     public String listVarsSep() {
         return "time" + "|" + "simcarPos" + "|" + "simcarHeading" + "|" + "simcarFracIndex" + "|" + "simcarSpeed" + "|"
-                + "simcarRoadIndex" + "|" + "eyeLocation" + "|" + "nearPoint" + "|" + "farPoint" + "|" + "carPoint"
+                + "simcarRoadIndex" + "|" + "eyeLocationX" + "|" + "eyeLocationY" + "|" + "nearPoint" + "|" + "farPoint" + "|"
+                + "carPoint"
                 + "|" + "steerAngle" + "|" + "accelerator" + "|" + "brake" + "|" + "autocarPos" + "|" + "autocarHeading"
                 + "|" + "autocarFracIndex" + "|" + "autocarSpeed" + "|" + "currentspeed" + "|" + "imaginedSpeedlimit"
-                + "|" + "lanepos" + "|" + "followedLane" + "|" + "visAttention" + "|" + "turning" + "|" + "block" + "|" + "signVis";
+                + "|" + "lanepos" + "|" + "followedLane" + "|" + "visAttention" + "|" + "turning" + "|" + "block" + "|"
+                + "signVis";
     }
 
     public String toString() {
         return time + "\t" + simcarPos + "\t" + simcarHeading + "\t" + simcarFracIndex + "\t" + simcarSpeed + "\t"
-                + simcarRoadIndex + "\t" + eyeLocation + "\t" + nearPoint + "\t" + farPoint + "\t" + carPoint + "\t"
+                + simcarRoadIndex + "\t" + eyeLocationX + "\t" + eyeLocationY + "\t" + nearPoint + "\t" + farPoint
+                + "\t" + carPoint + "\t"
                 + steerAngle + "\t" + accelerator + "\t" + brake + "\t" + autocarPos + "\t" + autocarHeading + "\t"
                 + autocarFracIndex + "\t" + autocarSpeed + "\t" + currentspeed + "\t" + imaginedSpeedlimit + "\t"
                 + lanepos + "\t" + followedLane + visAttention + "\t" + turning + "\t" + block + "\t" + signVis;
@@ -56,7 +61,7 @@ public class Sample {
 
     public String toStringSep() {
         return time + "|" + simcarPos + "|" + simcarHeading + "|" + simcarFracIndex + "|" + simcarSpeed + "|"
-                + simcarRoadIndex + "|" + eyeLocation + "|" + nearPoint + "|" + farPoint + "|" + carPoint + "|"
+                + simcarRoadIndex + "|" + eyeLocationX + "|" + eyeLocationY + "|" + nearPoint + "|" + farPoint + "|" + carPoint + "|"
                 + steerAngle + "|" + accelerator + "|" + brake + "|" + autocarPos + "|" + autocarHeading + "|"
                 + autocarFracIndex + "|" + autocarSpeed + "|" + currentspeed + "|" + imaginedSpeedlimit + "|" + lanepos
                 + "|" + followedLane + "|" + visAttention + "|" + turning + "|" + block + "|" + signVis;
