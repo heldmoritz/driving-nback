@@ -29,7 +29,7 @@ public class Driving extends actr.task.Task {
 	JLabel nearLabel, farLabel, signLabel, carLabel, speedoLabel, leftmirrorLabel, rightmirrorLabel, leftLaneLabel,
 			rightLaneLabel, construction;
 
-	final double scale = 0.95;//1.1; // .85 //.6
+	final double scale = 1.15; //0.925;//1.1; // .85 //.6
 	final double steerFactor_dfa = (16 * scale); // defaults to 16
 	final double steerFactor_dna = (4 * scale); // defaults to 4
 	final double steerFactor_na = (3 * scale); // defaults to 3
@@ -630,7 +630,7 @@ public class Driving extends actr.task.Task {
 		double timeMultiplier = 20;
 		double bias = 25;
 
-		double ticks = -diff + 40;// 1 / Math.log10(diff) * timeMultiplier - bias;
+		double ticks = -diff + 45;// 1 / Math.log10(diff) * timeMultiplier - bias;
 		if (ticks<0)
 			ticks = 99;
 		ticks = Math.min(Math.max(20, ticks), 60);

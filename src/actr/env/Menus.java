@@ -89,8 +89,8 @@ class Menus extends JMenuBar {
 			// addToMenu (outputMenu, actions.outputTasksAction);
 
 			dataMenu = new JMenu("Data");
-			addToMenuBox(dataMenu, actions.saveTraceAction);
-			addToMenuBox(dataMenu, actions.saveBehaviorAction);
+			addToMenuBox(dataMenu, actions.saveTraceAction, false);
+			addToMenuBox(dataMenu, actions.saveBehaviorAction, true);
 		}
 
 		add(fileMenu);
@@ -121,9 +121,9 @@ class Menus extends JMenuBar {
 		menu.add(item);
 	}
 
-	void addToMenuBox(JMenu menu, Action action){
+	void addToMenuBox(JMenu menu, Action action, Boolean ticked){
 		JCheckBox checkBox = new JCheckBox(action);
-		checkBox.setSelected(true);
+		checkBox.setSelected(ticked);
 		checkBox.setIcon(null);
 		menu.add(checkBox);
 	}

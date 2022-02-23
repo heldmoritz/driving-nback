@@ -35,7 +35,7 @@ public class Frame extends JFrame {
 	private Model model;
 	private boolean stop;
 
-	public boolean behaviorOut = true, traceOut = true;
+	public boolean behaviorOut = true, traceOut = false;
 
 	Frame(Core core) {
 		this(core, null);
@@ -714,11 +714,11 @@ public class Frame extends JFrame {
 	}
 
 	public void saveTrace() {
-		traceOut = traceOut == true ? false : true;
+		traceOut = traceOut ? false : true;
 	}
 
 	public void saveBehavior() {
-		behaviorOut = behaviorOut == true ? false : true;
+		behaviorOut = behaviorOut ? false : true;
 	}
 
 }
