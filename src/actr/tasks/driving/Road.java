@@ -16,6 +16,7 @@ public class Road extends Driving {
 	static Vector<Segment> segments = null;
 	int lanes = 3;
 	int block = 1;
+	double lanewidth = Env.scenario.construction ? Env.scenario.lanewidth[0] : Env.scenario.lanewidth[1];
 	// public Road() {
 	// }
 
@@ -98,7 +99,6 @@ public class Road extends Driving {
 
 		// j = blocks
 		// for (int j = 0; j <= 25; j++) {
-		double lanewidth = Env.scenario.construction ? Env.scenario.lanewidth[0] : Env.scenario.lanewidth[1];
 		for (int i = 1; i <= Env.scenario.blockLength; i++) {
 			double d = lanes * lanewidth / 2.0;
 

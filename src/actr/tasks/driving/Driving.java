@@ -29,7 +29,7 @@ public class Driving extends actr.task.Task {
 	JLabel nearLabel, farLabel, signLabel, carLabel, speedoLabel, leftmirrorLabel, rightmirrorLabel, leftLaneLabel,
 			rightLaneLabel, construction;
 
-	final double scale = 1.15; //0.925;//1.1; // .85 //.6
+	final double scale = 0.925; //1.15; //0.925;//1.1; // .85 //.6
 	final double steerFactor_dfa = (16 * scale); // defaults to 16
 	final double steerFactor_dna = (4 * scale); // defaults to 4
 	final double steerFactor_na = (3 * scale); // defaults to 3
@@ -40,7 +40,7 @@ public class Driving extends actr.task.Task {
 	final double thwFollow = 1.0;
 	final double thwMax = 5.0;
 
-	double startTime = 0, endTime = 180;
+	double startTime = 0, endTime = 500;
 	double accelBrake = 0, speed = 0;
 
 	static int minX = 174, maxX = (238 + 24), minY = 94, maxY = (262 + 32);
@@ -458,7 +458,10 @@ public class Driving extends actr.task.Task {
 			double rightLane = env.road.right(env.simcar.fracIndex, env.simcar.lane).z;
 			boolean b = carPosition > leftLane + (safeDistance + carWidth / 2)
 					&& carPosition < rightLane - (safeDistance + carWidth / 2) && Math.abs(steerAngle) < 0.05;
-
+			
+			//boolean b2 = Math.abs(env.simcar.h.z) < 0.02; //heading direction alternative - is independent of lane-width
+			
+			//b = b && b2;
 			if (b == false) {
 				switch_to_safe = env.time;
 			}
@@ -630,7 +633,7 @@ public class Driving extends actr.task.Task {
 		double timeMultiplier = 20;
 		double bias = 25;
 
-		double ticks = -diff + 45;// 1 / Math.log10(diff) * timeMultiplier - bias;
+		double ticks = -diff + 55;// 1 / Math.log10(diff) * timeMultiplier - bias;
 		if (ticks<0)
 			ticks = 99;
 		ticks = Math.min(Math.max(20, ticks), 60);

@@ -820,7 +820,7 @@ public class Model {
 
 		for (int i = 0; i<allFiles.length;i++){
 			String myFilename = allFiles[i].toString();
-			if(myFilename.contains("behavior_"))
+			if(myFilename.contains("back_"))
 				listOFiles.add(allFiles[i]);
 		}
 		int numberString = 0;

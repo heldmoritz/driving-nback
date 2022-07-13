@@ -15,7 +15,7 @@ public class Scenario {
 	double[] lanewidth = {2.5, 3.5}; // {highway, construction} (3.5m Bundesstraße, 3.66m (12ft) US highways)
 	int blockLength = 40000;
 	int blocks = 10;
-	boolean construction = false;
+	boolean construction = true;
 
 	Scenario() {
 	}

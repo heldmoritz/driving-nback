@@ -72,7 +72,7 @@ public class Simulation {
 			s.nearPoint = env.simcar.nearPoint.myclone();
 			s.farPoint = env.simcar.farPoint.myclone();
 		}
-		s.steerAngle = String.format("%.2f", env.simcar.steerAngle);
+		s.steerAngle = String.valueOf(env.simcar.steerAngle);
 		s.accelerator = String.format("%.2f", env.simcar.accelerator);
 		s.brake = String.format("%.2f", env.simcar.brake);
 		s.autocarPos = env.autocar.p.myclone();

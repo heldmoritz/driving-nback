@@ -11,9 +11,9 @@
     :v t
     ;---
     :rt -100
-    :ans 0.3
-    :mp 25
-    :lf 0.5
+    :ans 0.5
+    :mp 24	
+    :lf 0.3
     ;---
     ;:act t
     ;:brain-imaging t
@@ -80,9 +80,9 @@
     =goal>
         isa drive
         lookSpeedometer =ticks
-        ;?visual-location>
-        ;state free
-        ;buffer empty
+    ?visual-location>
+        state free
+        buffer empty
     ?imaginal>
         state free 
         buffer empty
@@ -1317,6 +1317,7 @@
         nr =nr
         num =num
         rehearsal t
+        lastSign =cid
     +imaginal>
         isa nback-state
         id =cid
@@ -1337,8 +1338,108 @@
         isa drive
         nbackspeed =slimit
         lookSpeedometer 0
+        lastSign =cid
     -imaginal>
 )
+
+(p nback-start-rehearsal
+    =goal>
+        isa nback
+        status notice
+        rehearsal t
+        < nr 7
+        >= num 1
+        lastSign =lastID
+    ?imaginal>
+        buffer empty
+        state free
+==>
+    !bind! =nr (get-num-rehearsal)
+    =goal>
+        status rehearse0
+        nr =nr
+        end-rehearsal f
+    +retrieval>
+        isa nback-state
+        id =lastID
+)
+
+
+(p nback-rehearse-sign0
+    =goal>
+        isa nback
+        status rehearse0
+    =retrieval>
+        isa nback-state
+        id =id
+        - id 0
+        slimit =nbackspeed
+    ?imaginal>
+        state free
+==>
+    =goal>
+        status notice
+    +imaginal>
+        isa nback-state
+        id =id
+        slimit =nbackspeed
+        recalled 0
+    -imaginal>
+    -retrieval>
+)
+
+(p nback-resolve-rehearsal
+    =goal>
+        isa nback
+        status notice
+        rehearsal t
+        end-rehearsal t
+    =imaginal>
+        isa nback-state
+==>
+    =goal>
+        isa nback
+        rehearsal t
+        end-rehearsal f
+    -imaginal>
+)
+
+
+(p nback-interrupt-rehearsing-notice-sign
+    =goal>
+        isa nback
+        - status notice  
+    =visual-location>
+        isa visual-location
+        kind speedsign
+    ?visual>
+        state free
+        buffer empty
+==>
+    =goal>
+        isa nback
+        status read-nback   
+        rehearsal f
+    +visual>
+        isa move-attention
+        screen-pos =visual-location
+)
+
+(p nback-restart-rehearsal
+    =goal>
+        isa nback
+        rehearsal t
+    =retrieval>
+        isa nback-state
+        id 0
+==>
+    =goal>
+        isa nback
+        status notice
+    -retrieval>
+    -imaginal>
+)
+
 (goal-focus goal1)
 (goal-focus goal2)
 
