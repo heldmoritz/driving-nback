@@ -713,11 +713,11 @@ public class Frame extends JFrame {
 		brainPanel.repaint();
 	}
 
-	public void saveTrace() {
+	public void reverseSaveTrace() {
 		traceOut = traceOut ? false : true;
 	}
 
-	public void saveBehavior() {
+	public void reverseSaveBehavior() {
 		behaviorOut = behaviorOut ? false : true;
 	}
 

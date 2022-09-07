@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import javax.lang.model.util.ElementScanner14;
 import javax.swing.JLabel;
 
 import actr.task.Result;

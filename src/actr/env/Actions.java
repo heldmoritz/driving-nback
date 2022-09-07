@@ -163,13 +163,13 @@ class Actions {
 
 		saveTraceAction = new AbstractAction ("Save Trace"){
 			public void actionPerformed(ActionEvent e){
-				frame.saveTrace();
+				frame.reverseSaveTrace();
 			}
 		};
 
 		saveBehaviorAction = new AbstractAction ("Save Behavior"){
 			public void actionPerformed(ActionEvent e){
-				frame.saveBehavior();
+				frame.reverseSaveBehavior();
 			}
 		};
 	}

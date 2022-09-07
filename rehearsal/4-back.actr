@@ -632,6 +632,8 @@
         screen-x =fx
         distance =fd
     !eval! (autocar-ahead =sl =fd =fx) ;peripheral vision
+    ?imaginal>
+        state free
 ==>
     =goal>
         isa drive
@@ -713,6 +715,8 @@
     =visual>
         isa car
         value =cl
+    ?imaginal>
+        state free
     !eval! (car-too-close =fd =fthw =dthw)
     !eval! (tailgate)
 ==>
@@ -830,6 +834,8 @@
     =visual>
         isa =isa
         value =value
+    ?imaginal>
+        state free
     !eval! (overtaking-not-safe =value)
     !eval! (not-merging)
 ==>
@@ -997,6 +1003,8 @@
         - follow far
     ?visual-location>        
         state error
+    ?imaginal>
+        state free
 ==>
     =goal>
         isa drive
@@ -1020,6 +1028,8 @@
     =visual>
         isa car
         value =cl
+    ?imaginal>
+        state free
     !eval! (not-same-lane =sl =cl)
 ==>
     =goal>
@@ -1042,6 +1052,8 @@
         - follow far
     ?visual-location>        
         state error
+    ?imaginal>
+        state free
 ==>
     =goal>
         isa drive
@@ -1082,17 +1094,19 @@
     =visual>
         isa car
         value =cl
+    ?imaginal>
+        state free
     !eval! (same-lane =sl =cl)
 ==>
     =goal>
         isa drive
         follow car
-        na nil
-        fa nil
-        na2 nil
-        fa2 nil
-        fkind2 nil
-        time2 nil
+        ;na nil
+        ;fa nil
+        ;na2 nil
+        ;fa2 nil
+        ;fkind2 nil
+        ;time2 nil
     +visual-location>
         isa visual-location
         kind near
@@ -1104,16 +1118,18 @@
         - follow car
     ?visual-location>
         state error
+    ?imaginal>
+        state free
 ==>
     =goal>
         isa control
         follow car
-        na nil
-        fa nil
-        na2 nil
-        fa2 nil
-        fkind2 nil
-        time2 nil
+        ;na nil
+        ;fa nil
+        ;na2 nil
+        ;fa2 nil
+        ;fkind2 nil
+        ;time2 nil
     +visual-location>
         isa visual-location
         kind near        
@@ -1125,17 +1141,19 @@
         - follow car
     ?visual-location>
         state error
+    ?imaginal>
+        state free
 ==>
     =goal>
         isa drive
         safe nil
         follow car
-        na nil
-        fa nil
-        na2 nil
-        fa2 nil
-        fkind2 nil
-        time2 nil 
+        ;na nil
+        ;fa nil
+        ;na2 nil
+        ;fa2 nil
+        ;fkind2 nil
+        ;time2 nil 
     +visual-location>
         isa visual-location
         kind near
@@ -1245,6 +1263,8 @@
     ?visual>
         state free
         buffer empty
+    ;?imaginal>
+        ;state free
 ==>
     =goal>
         na nil
@@ -1254,10 +1274,10 @@
         fkind2 nil
         time2 nil
         safe nil
-    +visual-location>
-        isa visual-location
-        kind near
-        :attended new
+        ;+visual-location>
+        ;isa visual-location
+        ;kind near
+        ;:attended new
 )
 (spp :u 1)
 
@@ -1288,6 +1308,8 @@
     ?visual>
         state free
         buffer empty
+    ?imaginal>
+        state free
 ==>
     =goal>
         isa drive
@@ -1822,7 +1844,7 @@
         isa nback
         status notice
         rehearsal t
-        < nr 7
+        < nr 10
         >= num 1
         lastSign =lastID
     ?imaginal>

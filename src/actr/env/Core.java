@@ -123,7 +123,7 @@ public class Core {
 		openFrame(new File(filename));
 		currentFile = fileDialog.getFile(); // mlh,
 		File file = new File(filename); // mlh
-		Model.outputPath = file.getParent() + "\\data\\"; // mlh
+		Model.outputPath = file.getParent() + "/data/"; // mlh
 	}
 
 	/**

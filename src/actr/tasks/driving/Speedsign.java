@@ -18,7 +18,6 @@ import java.awt.GraphicsEnvironment;
  */
 public class Speedsign extends Road {
 
-    double signOnset = 0;
     String speedlimit = "60"; // starting speed
     int speedI = 0;
     Position signPos;
@@ -46,7 +45,6 @@ public class Speedsign extends Road {
             signFrac = env.simcar.fracIndex + 100;
             signPos = Road.location(signFrac, env.road.lanes + 1.3);
             signPos.y = 1.5;
-            signOnset = time;
         }
     }
 

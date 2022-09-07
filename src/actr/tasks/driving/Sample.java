@@ -14,7 +14,7 @@ public class Sample {
     String steerAngle, accelerator, brake;
     Position autocarPos, autocarHeading;
     double autocarFracIndex, autocarSpeed;
-    boolean autocarBraking;;
+    boolean autocarBraking;
     // LocationChunk eyeLocation;
     // LocationChunk handLocation;
     // boolean handMoving;

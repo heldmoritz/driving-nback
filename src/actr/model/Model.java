@@ -48,7 +48,6 @@ public class Model {
 
 	// output = new Vector<Sample> (); //mlh
 	List<String> trace = new ArrayList<String>();
-	List<String> state_output = new ArrayList<String>();
 	public static String outputPath = "";
 
 	private Model(Frame frame) {
@@ -426,7 +425,10 @@ public class Model {
 				}
 			});
 		}
+		System.out.println(events.toString());
 		while (!stop && (events.hasMoreEvents() || runUntilStop)) {
+			System.out.println(events.toString());
+
 			Event event = events.next();
 			if (realTime && (event.getTime() > time))
 				incrementalSleep((long) Math.round(
@@ -820,7 +822,7 @@ public class Model {
 
 		for (int i = 0; i<allFiles.length;i++){
 			String myFilename = allFiles[i].toString();
-			if(myFilename.contains("back_"))
+			if(myFilename.contains("behavior"))
 				listOFiles.add(allFiles[i]);
 		}
 		int numberString = 0;
